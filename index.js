@@ -4,13 +4,16 @@ botToken = process.env.token
 appkey = process.env.appkeys
 secertkey = process.env.secertkeys
 tarckin_id = process.env.tarckin_ids
-const IdChannel = "@NSshoping";
+const IdChannel = process.env.Idchannel;
+const Channel = process.env.channel;
+const link_cart = process.env.cart;
 const bot = new Telegraf(botToken);
+
 bot.command(['start', 'help'], async (ctx) => {
     const replyMarkup = await {
         inline_keyboard: [
 
-            [{ text: 'اشترك في قناة', url: 'https://t.me/NSshoping' }],
+            [{ text: 'اشترك في قناة', url: Channel }],
             [{ text: '🛒 تخفيض العملات على منتجات السلة 🛒', callback_data: 'cart' },],
 
         ],
@@ -34,7 +37,7 @@ bot.action("cart", (ctx) => {
     const cartMessage = `
             طريقة الاستفادة من تخفيض العملات على منتجات السلة
             🔸 أولاً ادخل إلى تطبيق Aliexpress ثم السلة واختر المنتجات
-            🔸 ثانيًا ادخل من هذا الرابط https://s.click.aliexpress.com/e/_DC7O0WP بعد ذلك اضغط على الزر "payer" أو "دفع"
+            🔸 ثانيًا ادخل من هذا الرابط ${link_cart}بعد ذلك اضغط على الزر "payer" أو "دفع"
             🔸 بعد ظهور صفحة الدفع، اضغط على أيقونة المشاركة في الأعلى وقم بنسخ الرابط
             🔸 ثم قم بلصق الرابط هنا في البوت وانتظر لحظة حتى يعطيك رابطًا آخر للدخول من خلاله وستجد السعر قد انخفض
         `;
@@ -185,7 +188,12 @@ ${link3}
             ctx.reply('حدث خطأ غير متوقع');
         }
     } else {
-        ctx.reply(' ,اأنت غير مشترك في القناة.');
+        const replyMarkup2 = {
+            inline_keyboard: [
+                [{ text: 'اشتراك', url: Channel }],
+            ],
+        };
+        ctx.reply(' اأنت غير مشترك في القناة.',{reply_markup:replyMarkup2});
     }
 });
 bot.launch({ webhook: { domain: process.env.RENDER_EXTERNAL_URL, port: process.env.PORT }, allowedUpdates: ['message', 'callback_query'], })
