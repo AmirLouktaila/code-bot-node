@@ -1,9 +1,6 @@
 const { Telegraf, Markup } = require('telegraf');
 const axios = require('axios');
-botToken = process.env.token
-appkey = process.env.appkeys
-secertkey = process.env.secertkeys
-tarckin_id = process.env.tarckin_ids
+botToken = process.env.token;
 const IdChannel = process.env.Idchannel;
 const Channel = process.env.channel;
 const link_cart = process.env.cart;
@@ -79,111 +76,154 @@ bot.on('text', async (ctx) => {
             if (text === "/start") {
                 console.log("ok");
             } else {
-                ctx.reply('انتظر قليلا...');
-                let link1;
-                let link2;
-                let link3;
-
-
-                const responseAff = await axios.get(`https://pine-three-fog.glitch.me/links/?links=${text}&value1=${appkey}&value2=${secertkey}&value3=${tarckin_id}`);
-                const data = responseAff.data;
-                link1 = data.link1;
-                link2 = data.link2;
-                link3 = data.link3;
-                id = data.id;
-                if (link1 == undefined) {
-                    trade = data.trade
-
-                    ctx.sendPhoto({ url: "https://i.ibb.co/qpq5PR6/photo-2023-09-07-13-07-58.jpg" }, { caption: trade });
-                } else {
+  
+        
 
                     try {
-                        const response = await axios.get(`https://coinzy-u0g3.onrender.com/fetch?id=${id}`);
-                        const data = response.data;
 
-                        const normalData = data.normal;
-                        const title = normalData.name;
-                        const img_s = normalData.image;
-                        const price_org = normalData.normal;
-                        const shipping = normalData.shipping;
-                        const review = normalData.rate;
-                        const store = normalData.store;
-                        const sales = normalData.sales;
-                        const totalRates = normalData.totalRates;
-                        const storeRate = normalData.storeRate;
+                        const getLinkId = (link) => {
+                            if (link.includes("/item/") || link.includes("/i/")) {
+                                const extractItem = (text) => {
+                                    if (text.includes("/i/")) {
+                                        const startIndex = text.indexOf('/i/') + '/i/'.length;
+                                        const endIndex = text.indexOf('.', startIndex);
+                                        if (startIndex !== -1 && endIndex !== -1) {
+                                            const extractedText = text.substring(startIndex, endIndex);
+                                            return extractedText;
+                                        } else {
+                                            return null;
+                                        }
+                                    } else if (text.includes("/item/")) {
+                                        const startIndex = text.indexOf('/item/') + '/item/'.length;
+                                        const endIndex = text.indexOf('.', startIndex);
+                                        if (startIndex !== -1 && endIndex !== -1) {
+                                            const extractedText = text.substring(startIndex, endIndex);
+                                            return extractedText;
+                                        } else {
+                                            return null;
+                                        }
+                                    }
+                                };
 
-                        const points = data.points;
-                        const disprice = points.total;
-                        const realprice = points.discountPrice;
-                        const discountCoinsFetch = normalData.discount;
-                        const discountCoinsPoint = points.discount;
+                                const inputText = link;
+                                const extractedItem = extractItem(inputText);
+                                return extractedItem;
+                            } else if (link.includes("https://campaign.aliexpress.com/wow/")) {
+                                const campaign = (url) => {
+                                    const text = url;
+                                    const match = text.match(/productIds=(.*?)&/);
+                                    if (match) {
+                                        const productIds = match[1];
+                                        return productIds;
+                                    } else {
+                                        return null;
+                                    }
+                                };
 
-                        const superL = data.super;
-                        const supprice = superL.price;
+                                const textCampaign = link;
+                                const campaignAliexpress = campaign(textCampaign);
+                                return campaignAliexpress;
+                            } else if (link.includes("/share/")) {
+                                const getNumbers = (urls) => {
+                                    const url = urls;
+                                    const numbers = url.match(/\d+/g);
+                                    for (const num of numbers) {
+                                        if (num.startsWith("100500") && num.length === 16) {
+                                            return num;
+                                        }
+                                    }
+                                };
 
-                        const limited = data.limited;
-                        const limprice = limited.price;
-                        const coupon = normalData.coupon;
-                        let couponList = "";
-
-                        if (coupon === "لا يوجد كوبونات ❎") {
-                            couponList = normalData.coupon;
-                        } else {
-                            couponList = "";
-                            normalData.coupon.forEach(coupons => {
-                                const code = coupons.code;
-                                const detail = coupons.detail.replace('طلبات تزيد على US ', '');
-                                const desc = coupons.desc.replace('US ', '');
-                                couponList += `🎁${desc}/${detail} :${code}\n`;
-                            });
-                        }
-
-
-                        const messageLink = `
-التخفيض لـ${title}
-السعر الاصلي : (${realprice})
-✈️ الشحن : (${shipping})
-🛒 إسم المتجر : ${store}
-📊 معدل تقييم  المتجر : ${storeRate}
-عدد المبيعات : ${sales}
---------🔥الكوبونات 🔥------
-${couponList}
---------🔥 الروابط التخفيضية 🔥------
-                        
-🏷 نسبة تخفيض بالعملات قبل  :  (${discountCoinsFetch})
-🏷 نسبة تخفيض بعد  : (${discountCoinsPoint})
-                        
-التقييم : ${review}
-التقييمات : ${totalRates}
-🌟رابط تخفيض النقاط: (${disprice})
-${link1}
-🔥 رابط تخفيض السوبر: (${supprice})
-${link2}
-📌رابط العرض المحدود:(${limprice})
-${link3}
-                    `;
-
-                        const replyMarkup1 = {
-                            inline_keyboard: [
-                                [{ text: '🛒 تخفيض العملات على منتجات السلة 🛒', callback_data: 'cart' }],
-                            ],
+                                const urlAff = getNumbers(link);
+                                return urlAff;
+                            }
                         };
-                        sendPhotoAndMessage(ctx, img_s, messageLink, replyMarkup1);
 
+
+
+                        console.log(ctx.message.from);
+                        // ctx.message.text
+                        ctx.reply('انتظر قليلا ...')
+                            .then((message) => {
+
+                                const extractedLinks = [ctx.message.text]; // Replace with your actual extracted links
+                                axios.get(extractedLinks[0], { allowRedirects: true })
+                                    .then(response => {
+
+                                        const result = getLinkId(response.data);
+                                        console.log(result);
+
+
+                                        affData.getData(result)
+                                            .then((coinPi) => {
+                                                console.log("coinPi : ", coinPi)
+                                                ctx.deleteMessage(message.message_id)
+                                                    .then(() => {
+                                                        ctx.replyWithPhoto({ url: coinPi.info.normal.image },
+                                                            {
+
+
+                                                                caption: `
+<b>>-----------« تخفيض الاسعار 🎉 »>-----------</b>
+${coinPi.info.normal.name}
+
+السعر الاصلي : (${coinPi.info.normal.price})
+التقييم : ${coinPi.info.normal.rate}
+التقييمات : ${coinPi.info.normal.totalRates}
+<b>----------- | ✨ المتجر ✨ | -----------</b>
+
+✈️ الشحن : ${coinPi.info.normal.shipping}
+🛒 إسم المتجر : ${coinPi.info.normal.store}
+📊 معدل تقييم المتجر : ${coinPi.info.normal.storeRate}
+<b>----------- | ✨ التخفيضات ✨ | -----------</b>
+
+عدد المبيعات : ${coinPi.info.normal.sales}
+🏷 نسبة تخفيض بالعملات قبل  :  (${coinPi.info.normal.discount})
+🏷 نسبة تخفيض بعد  : (${coinPi.info.points.discount})
+
+🌟رابط تخفيض النقاط: ${coinPi.info.points.discountPrice}
+${coinPi.aff.points}
+
+🔥 رابط تخفيض السوبر: ${coinPi.info.super.price}
+${coinPi.aff.super}
+
+📌رابط العرض المحدود: ${coinPi.info.limited.price}
+${coinPi.aff.limited}
+
+` ,
+                                                                parse_mode: "HTML",
+                                                                ...Markup.inlineKeyboard([
+                                                                    Markup.button.callback("🛒 تخفيض العملات على منتجات السلة 🛒", "cart"),
+
+                                                                ])
+                                                            });
+                                                    })
+
+                                            });
+                                    });
+
+                            })
+                            .catch(error => {
+                                // Handle errors here
+                                console.error(error.message);
+                            });
                         // ctx.sendPhoto({ url: img_s });
                         // ctx.sendMessage(messageLink, { reply_markup: replyMarkup1 });
                     } catch (error) {
                         const messageLink = `
-                        🌟رابط تخفيض النقاط:
-                        ${link1}
-                        🔥 رابط تخفيض السوبر: 
-                        ${link2}
-                        📌رابط العرض المحدود:
-                        ${link3}
+🌟رابط تخفيض النقاط: ${coinPi.info.points.discount}
+${coinPi.aff.points}
+
+🔥 رابط تخفيض السوبر: ${coinPi.info.super.price}
+${coinPi.aff.super}
+
+📌رابط العرض المحدود: ${coinPi.info.limited.price}
+${coinPi.aff.limited}
+
                     `;
                         ctx.reply(messageLink);
                     }
-                }
+                
             }
         } catch (e) {
             ctx.reply('حدث خطأ غير متوقع');
