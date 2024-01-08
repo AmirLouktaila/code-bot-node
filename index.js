@@ -13,7 +13,7 @@ const IdChannel = process.env.Idchannel;
 const Channel = process.env.channel;
 const link_cart = process.env.cart;
 const bot = new Telegraf(botToken);
-app.use(bot.createWebhook({ domain: process.env.RENDER_EXTERNAL_URL }));
+
 bot.command(['start', 'help'], async (ctx) => {
     const replyMarkup = await {
         inline_keyboard: [
@@ -201,6 +201,12 @@ ${link3}
         };
         ctx.reply(' اأنت غير مشترك في القناة.',{reply_markup:replyMarkup2});
     }
+});
+app.use(express.json());
+app.use((req, res, next) => {
+    bot.createWebhook({ domain: process.env.RENDER_EXTERNAL_URL });
+    console.log('Middleware executed!');
+    next(); // Call next to move to the next middleware or route handler
 });
 
 app.listen(3000, () => console.log("Listening on port", 3000));
