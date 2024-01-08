@@ -3,7 +3,7 @@ const axios = require('axios');
 const express = require('express');
 const app = express();
 
-app.use(bot.createWebhook({ domain: process.env.RENDER_EXTERNAL_URL }));
+
 
 botToken = process.env.token
 appkey = process.env.appkeys
@@ -13,7 +13,7 @@ const IdChannel = process.env.Idchannel;
 const Channel = process.env.channel;
 const link_cart = process.env.cart;
 const bot = new Telegraf(botToken);
-
+app.use(bot.createWebhook({ domain: process.env.RENDER_EXTERNAL_URL }));
 bot.command(['start', 'help'], async (ctx) => {
     const replyMarkup = await {
         inline_keyboard: [
