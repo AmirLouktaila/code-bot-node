@@ -1,10 +1,5 @@
 const { Telegraf, Markup } = require('telegraf');
 const axios = require('axios');
-const express = require('express');
-const app = express();
-
-
-
 botToken = process.env.token
 appkey = process.env.appkeys
 secertkey = process.env.secertkeys
@@ -202,19 +197,10 @@ ${link3}
         ctx.reply(' اأنت غير مشترك في القناة.',{reply_markup:replyMarkup2});
     }
 });
-app.use(express.json());
-app.use((req, res, next) => {
-    bot.createWebhook({ domain: process.env.RENDER_EXTERNAL_URL });
-    console.log('Middleware executed!');
-    next(); // Call next to move to the next middleware or route handler
-});
-
-app.listen(3000, () => console.log("Listening on port", 3000));
-
-// bot.launch({ webhook: { domain: process.env.RENDER_EXTERNAL_URL, port: process.env.PORT }, allowedUpdates: ['message', 'callback_query'], })
-//     .then(() => {
-//         console.log('Bot is running');
-//     })
-//     .catch((error) => {
-//         console.error('Error starting the bot:', error);
-//     });
+bot.launch({ webhook: { domain: process.env.RENDER_EXTERNAL_URL, port: process.env.PORT }, allowedUpdates: ['message', 'callback_query'], })
+    .then(() => {
+        console.log('Bot is running');
+    })
+    .catch((error) => {
+        console.error('Error starting the bot:', error);
+    });
