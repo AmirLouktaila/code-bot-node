@@ -1,5 +1,10 @@
 const { Telegraf, Markup } = require('telegraf');
 const axios = require('axios');
+const express = require('express');
+const app = express();
+
+app.use(bot.createWebhook({ domain: process.env.RENDER_EXTERNAL_URL }));
+
 botToken = process.env.token
 appkey = process.env.appkeys
 secertkey = process.env.secertkeys
@@ -186,7 +191,7 @@ ${link3}
                 }
             }
         } catch (e) {
-            ctx.reply('حدث خطأ غير متوقع');
+            ctx.reply('حدث خطأ غير متوقع حاول مرة اخرى');
         }
     } else {
         const replyMarkup2 = {
@@ -197,10 +202,13 @@ ${link3}
         ctx.reply(' اأنت غير مشترك في القناة.',{reply_markup:replyMarkup2});
     }
 });
-bot.launch({ webhook: { domain: process.env.RENDER_EXTERNAL_URL, port: process.env.PORT }, allowedUpdates: ['message', 'callback_query'], })
-    .then(() => {
-        console.log('Bot is running');
-    })
-    .catch((error) => {
-        console.error('Error starting the bot:', error);
-    });
+
+app.listen(3000, () => console.log("Listening on port", 3000));
+
+// bot.launch({ webhook: { domain: process.env.RENDER_EXTERNAL_URL, port: process.env.PORT }, allowedUpdates: ['message', 'callback_query'], })
+//     .then(() => {
+//         console.log('Bot is running');
+//     })
+//     .catch((error) => {
+//         console.error('Error starting the bot:', error);
+//     });
