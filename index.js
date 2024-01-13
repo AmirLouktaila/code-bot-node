@@ -2,6 +2,7 @@ const { Telegraf, Markup } = require('telegraf');
 const axios = require('axios');
 const https = require('https');
 const express = require('express');
+const AliExpressLibrary = require('./afflinker.js');
 const app = express();
 const botToken = process.env.token;
 const appkey = process.env.appkeys;
@@ -11,6 +12,7 @@ const IdChannel = process.env.Idchannel;
 const Channel = process.env.channel;
 const link_cart = process.env.cart;
 const bot = new Telegraf(botToken);
+const aliExpressLib = new AliExpressLibrary(appkey, secertkey, tarckin_id);
 app.use(express.json());
 app.use(bot.webhookCallback('/bot'))
 
@@ -149,7 +151,7 @@ bot.on('text', async (ctx) => {
                         .then((message) => {
                             const links = extractLinks(`${ctx.message.text}`)
                             idCatcher(links[0]).then(response_link => {
-                                affData.getData(response_link)
+                                aliExpressLib.getData(response_link)
                                     .then((coinPi) => {
                                         console.log("coinPi : ", coinPi)
                                         let couponList = "";
