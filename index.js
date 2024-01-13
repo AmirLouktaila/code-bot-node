@@ -1,5 +1,8 @@
 const { Telegraf, Markup } = require('telegraf');
 const axios = require('axios');
+const https = require('https');
+const express = require('express');
+const app = express();
 botToken = process.env.token
 appkey = process.env.appkeys
 secertkey = process.env.secertkeys
@@ -8,6 +11,25 @@ const IdChannel = process.env.Idchannel;
 const Channel = process.env.channel;
 const link_cart = process.env.cart;
 const bot = new Telegraf(botToken);
+app.use(express.json());
+app.use(bot.webhookCallback('/bot'))
+
+app.get('/', (req, res) => { res.sendStatus(200) });
+
+app.get('/ping', (req, res) => { res.status(200).json({ message: 'Ping successful' }); });
+
+function keepAppRunning() {
+    setInterval(() => {
+        https.get(`${process.env.RENDER_EXTERNAL_URL}/ping`, (resp) => {
+            if (resp.statusCode === 200) {
+                console.log('Ping successful');
+            } else {
+                console.error('Ping failed');
+            }
+        });
+    }, 5 * 60 * 1000);
+}
+
 
 bot.command(['start', 'help'], async (ctx) => {
     const replyMarkup = await {
@@ -19,7 +41,7 @@ bot.command(['start', 'help'], async (ctx) => {
         ],
     };
 
- 
+
 
     const welcomeMessage = `
         مرحبًا بكم في بوت 
@@ -194,13 +216,20 @@ ${link3}
                 [{ text: 'اشتراك', url: Channel }],
             ],
         };
-        ctx.reply(' اأنت غير مشترك في القناة.',{reply_markup:replyMarkup2});
+        ctx.reply(' اأنت غير مشترك في القناة.', { reply_markup: replyMarkup2 });
     }
 });
-bot.launch({ webhook: { domain: process.env.RENDER_EXTERNAL_URL, port: process.env.PORT }, allowedUpdates: ['message', 'callback_query'], })
-    .then(() => {
-        console.log('Bot is running');
-    })
-    .catch((error) => {
-        console.error('Error starting the bot:', error);
-    });
+app.listen(3000, () => {
+    bot.telegram.setWebhook(`${process.env.RENDER_EXTERNAL_URL}/bot`)
+        .then(() => {
+            console.log('Webhook Set ✅ & Server is running on port 3000 💻');
+            keepAppRunning();
+        });
+});
+// bot.launch({ webhook: { domain: process.env.RENDER_EXTERNAL_URL, port: process.env.PORT }, allowedUpdates: ['message', 'callback_query'], })
+//     .then(() => {
+//         console.log('Bot is running');
+//     })
+//     .catch((error) => {
+//         console.error('Error starting the bot:', error);
+//     });
