@@ -101,114 +101,142 @@ bot.on('text', async (ctx) => {
             if (text === "/start") {
                 console.log("ok");
             } else {
-                ctx.reply('انتظر قليلا...');
-                let link1;
-                let link2;
-                let link3;
+                try {
 
 
-                const responseAff = await axios.get(`https://pine-three-fog.glitch.me/links/?links=${text}&value1=${appkey}&value2=${secertkey}&value3=${tarckin_id}`);
-                const data = responseAff.data;
-                link1 = data.link1;
-                link2 = data.link2;
-                link3 = data.link3;
-                id = data.id;
-                if (link1 == undefined) {
-                    trade = data.trade
-
-                    ctx.sendPhoto({ url: "https://i.ibb.co/qpq5PR6/photo-2023-09-07-13-07-58.jpg" }, { caption: trade });
-                } else {
-
-                    try {
-                        const response = await axios.get(`https://coinzy-u0g3.onrender.com/fetch?id=${id}`);
-                        const data = response.data;
-
-                        const normalData = data.normal;
-                        const title = normalData.name;
-                        const img_s = normalData.image;
-                        const price_org = normalData.normal;
-                        const shipping = normalData.shipping;
-                        const review = normalData.rate;
-                        const store = normalData.store;
-                        const sales = normalData.sales;
-                        const totalRates = normalData.totalRates;
-                        const storeRate = normalData.storeRate;
-
-                        const points = data.points;
-                        const disprice = points.total;
-                        const realprice = points.discountPrice;
-                        const discountCoinsFetch = normalData.discount;
-                        const discountCoinsPoint = points.discount;
-
-                        const superL = data.super;
-                        const supprice = superL.price;
-
-                        const limited = data.limited;
-                        const limprice = limited.price;
-                        const coupon = normalData.coupon;
-                        let couponList = "";
-
-                        if (coupon === "لا يوجد كوبونات ❎") {
-                            couponList = normalData.coupon;
-                        } else {
-                            couponList = "";
-                            normalData.coupon.forEach(coupons => {
-                                const code = coupons.code;
-                                const detail = coupons.detail.replace('طلبات تزيد على US ', '');
-                                const desc = coupons.desc.replace('US ', '');
-                                couponList += `🎁${desc}/${detail} :${code}\n`;
-                            });
+                    const extractLinks = (text) => {
+                        const urlPattern = /http[s]?:\/\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+/g;
+                        const linksRedirect = text.match(urlPattern) || [];
+                        return linksRedirect;
+                    };
+                    const idCatcher = async (id) => {
+                        if (/^\d+$/.test(id)) {
+                            return id;
+                        } else if (id.includes("aliexpress.com")) {
+                            if (/\/(\d+)\.html/.test(id)) {
+                                return id.match(/\/(\d+)\.html/)[1];
+                            } else {
+                                try {
+                                    const response = await axios.head(id, { maxRedirects: 0, validateStatus: (status) => status >= 200 && status < 400 });
+                                    const decodedUrl = decodeURIComponent(response.headers.location);
+                                    const regex = /\/(\d+)\.html/;
+                                    const match = decodedUrl.match(regex);
+                                    if (match && match[1]) {
+                                        return match[1];
+                                    } else if (decodedUrl.includes('/item/')) {
+                                        // Handle the additional AliExpress URL pattern directly
+                                        const regexItem = /\/(\d+)\.html/;
+                                        const matchItem = decodedUrl.match(regexItem);
+                                        if (matchItem && matchItem[1]) {
+                                            return matchItem[1];
+                                        }
+                                    }
+                                } catch (error) {
+                                    console.error('Error occurred while fetching the URL:', error);
+                                    res.status(400).json({ ok: false, error: 'Invalid URL provided' });
+                                    return null;
+                                }
+                            }
                         }
+                        console.error('Invalid ID or URL provided');
+                        return null;
+                    };
 
 
-                        const messageLink = `
-التخفيض لـ${title}
-السعر الاصلي : (${realprice})
-✈️ الشحن : (${shipping})
-🛒 إسم المتجر : ${store}
-📊 معدل تقييم  المتجر : ${storeRate}
-عدد المبيعات : ${sales}
---------🔥الكوبونات 🔥------
+
+                    // ctx.message.text
+                    ctx.reply('انتظر قليلا ...')
+                        .then((message) => {
+                            const links = extractLinks(`${ctx.message.text}`)
+                            idCatcher(links[0]).then(response_link => {
+                                affData.getData(response_link)
+                                    .then((coinPi) => {
+                                        console.log("coinPi : ", coinPi)
+                                        let couponList = "";
+
+                                        if (coinPi.info.normal.coupon === "لا يوجد كوبونات ❎") {
+                                            couponList = coinPi.info.normal.coupon;
+                                        } else {
+                                            couponList = "";
+                                            coinPi.info.normal.coupon.forEach(coupons => {
+                                                const code = coupons.code;
+                                                const detail = coupons.detail.replace('طلبات تزيد على US ', '');
+                                                const desc = coupons.desc.replace('US ', '');
+                                                couponList += `🎁${desc}/${detail} :${code}\n`;
+                                            });
+                                        }
+                                        ctx.replyWithPhoto({ url: coinPi.info.normal.image },
+                                            {
+
+
+                                                caption: `
+<b>>-----------« تخفيض الاسعار 🎉 »>-----------</b>
+${coinPi.info.normal.name}
+
+السعر الاصلي : (${coinPi.info.normal.price})
+
+التقييم : ${coinPi.info.normal.rate}
+التقييمات : ${coinPi.info.normal.totalRates}
+<b>----------- | ✨ المتجر ✨ | -----------</b>
+
+✈️ الشحن : ${coinPi.info.normal.shipping}
+🛒 إسم المتجر : ${coinPi.info.normal.store}
+📊 معدل تقييم المتجر : ${coinPi.info.normal.storeRate}
+<b>----------- | ✨ التخفيضات ✨ | -----------</b>
+
+عدد المبيعات : ${coinPi.info.normal.sales}
+🏷 نسبة تخفيض بالعملات قبل  :  (${coinPi.info.normal.discount})
+🏷 نسبة تخفيض بعد  : (${coinPi.info.points.discountPrice})
+
+🌟رابط تخفيض النقاط: ${coinPi.info.points.discount}
+${coinPi.aff.points}
+
+🔥 رابط تخفيض السوبر: ${coinPi.info.super.price}
+${coinPi.aff.super}
+
+📌رابط العرض المحدود: ${coinPi.info.limited.price}
+${coinPi.aff.limited}
+<b>----------- | ✨ الكوبونات ✨ | -----------</b>
 ${couponList}
---------🔥 الروابط التخفيضية 🔥------
-                        
-🏷 نسبة تخفيض بالعملات قبل  :  (${discountCoinsFetch})
-🏷 نسبة تخفيض بعد  : (${discountCoinsPoint})
-                        
-التقييم : ${review}
-التقييمات : ${totalRates}
-🌟رابط تخفيض النقاط: (${disprice})
-${link1}
-🔥 رابط تخفيض السوبر: (${supprice})
-${link2}
-📌رابط العرض المحدود:(${limprice})
-${link3}
-                    `;
+` ,
+                                                parse_mode: "HTML",
+                                                ...Markup.inlineKeyboard([
+                                                    Markup.button.callback("🛒 تخفيض العملات على منتجات السلة 🛒", "cart"),
 
-                        const replyMarkup1 = {
-                            inline_keyboard: [
-                                [{ text: '🛒 تخفيض العملات على منتجات السلة 🛒', callback_data: 'cart' }],
-                            ],
-                        };
-                        sendPhotoAndMessage(ctx, img_s, messageLink, replyMarkup1);
+                                                ])
+                                            }).then(() => {
+                                                ctx.deleteMessage(message.message_id)
+                                            })
 
-                        // ctx.sendPhoto({ url: img_s });
-                        // ctx.sendMessage(messageLink, { reply_markup: replyMarkup1 });
-                    } catch (error) {
-                        const messageLink = `
-                        🌟رابط تخفيض النقاط:
-                        ${link1}
-                        🔥 رابط تخفيض السوبر: 
-                        ${link2}
-                        📌رابط العرض المحدود:
-                        ${link3}
+
+                                    });
+
+
+                            })
+                        })
+
+                        .catch(error => {
+                            console.error(error.message);
+                        });
+
+                } catch (error) {
+                    const messageLink = `
+🌟رابط تخفيض النقاط: ${coinPi.info.points.discount}
+${coinPi.aff.points}
+
+🔥 رابط تخفيض السوبر: ${coinPi.info.super.price}
+${coinPi.aff.super}
+
+📌رابط العرض المحدود: ${coinPi.info.limited.price}
+${coinPi.aff.limited}
+
                     `;
-                        ctx.reply(messageLink);
-                    }
+                    ctx.reply(messageLink);
                 }
-            }
+
+            }////d
         } catch (e) {
-            ctx.reply('حدث خطأ غير متوقع حاول مرة اخرى');
+            ctx.reply('حدث خطأ غير متوقع');
         }
     } else {
         const replyMarkup2 = {
