@@ -188,9 +188,9 @@ ${coinPi.info.normal.name}
 
 عدد المبيعات : ${coinPi.info.normal.sales}
 🏷 نسبة تخفيض بالعملات قبل  :  (${coinPi.info.normal.discount})
-🏷 نسبة تخفيض بعد  : (${coinPi.info.points.discountPrice})
+🏷 نسبة تخفيض بعد  : (${coinPi.info.points.discount})
 
-🌟رابط تخفيض النقاط: ${coinPi.info.points.discount}
+🌟رابط تخفيض النقاط: ${coinPi.info.points.discountPrice}
 ${coinPi.aff.points}
 
 🔥 رابط تخفيض السوبر: ${coinPi.info.super.price}
