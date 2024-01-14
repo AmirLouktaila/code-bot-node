@@ -151,6 +151,9 @@ bot.on('text', async (ctx) => {
                         .then((message) => {
                             const links = extractLinks(`${ctx.message.text}`)
                             idCatcher(links[0]).then(response_link => {
+                                if (links[0] == "https://m.aliexpress.com/p/trade/confirm") {
+
+                                }
                                 aliExpressLib.getData(response_link)
                                     .then((coinPi) => {
                                         console.log("coinPi : ", coinPi)
@@ -190,7 +193,7 @@ ${coinPi.info.normal.name}
 🏷 نسبة تخفيض بالعملات قبل  :  (${coinPi.info.normal.discount})
 🏷 نسبة تخفيض بعد  : (${coinPi.info.points.discount})
 
-🌟رابط تخفيض النقاط: ${coinPi.info.points.discountPrice}
+🌟رابط تخفيض النقاط: ${coinPi.info.points.total}
 ${coinPi.aff.points}
 
 🔥 رابط تخفيض السوبر: ${coinPi.info.super.price}
