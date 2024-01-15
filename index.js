@@ -178,7 +178,7 @@ bot.on('text', async (ctx) => {
 <b>>-----------« تخفيض الاسعار 🎉 »>-----------</b>
 ${coinPi.info.normal.name}
 
-السعر الاصلي : (${coinPi.info.normal.price})
+السعر الاصلي : (${coinPi.info.points.discountPrice})
 
 التقييم : ${coinPi.info.normal.rate}
 التقييمات : ${coinPi.info.normal.totalRates}
