@@ -157,7 +157,7 @@ bot.on('text', async (ctx) => {
                                 if (match) {
                                     let numbersText = match[1];
                                     numbersText = numbersText.replace(',', '%2C');
-                                    const finalUrl = `https://www.aliexpress.com/p/trade/confirm.html?availableProductShopcartIds=${numbersText}&extraParams=%7B%22channelInfo%22%3A%7B%22sourceType%22%3A%22620%22%7D%7D&aff_fcid=`;
+                                    const finalUrl = `https://star.aliexpress.com/share/share.htm?platform=AE&businessType=ProductDetail&redirectUrl=%0Ahttps%3A%2F%2Fwww.aliexpress.com%2Fp%2Ftrade%2Fconfirm.html%3FshopcartIds%3D${numbersText}%26availableProductShopcartIds%3D${numbersText}%26orderFrom%3DmsiteShopcart%26curPageLogUid%3D_7pGdch%26spm%3Da2g0n.shopcart.0.0%26extraParams%3D%7B%22channelInfo%22%3A%7B%22sourceType%22%3A%22620%22%7D%7D&aff_fcid=`;
                                     console.log(finalUrl);
                                     try {
                                         aliExpressLib.getData(finalUrl).then((data) => {
