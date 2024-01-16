@@ -164,7 +164,7 @@ bot.on('text', async (ctx) => {
                                             console.log(data)
                                             cart = `
  رابط السلة 
- ${data}                                   
+ ${data.aff.normal}                                   
                                     `
                                             ctx.sendMessage(cart)
                                         })
@@ -175,30 +175,30 @@ bot.on('text', async (ctx) => {
                                 }
                             }
 
-else{
-                            idCatcher(links[0]).then(response_link => {
+                            else {
+                                idCatcher(links[0]).then(response_link => {
 
-                                aliExpressLib.getData(response_link)
-                                    .then((coinPi) => {
-                                        console.log("coinPi : ", coinPi)
-                                        let couponList = "";
+                                    aliExpressLib.getData(response_link)
+                                        .then((coinPi) => {
+                                            console.log("coinPi : ", coinPi)
+                                            let couponList = "";
 
-                                        if (coinPi.info.normal.coupon === "لا يوجد كوبونات ❎") {
-                                            couponList = coinPi.info.normal.coupon;
-                                        } else {
-                                            couponList = "";
-                                            coinPi.info.normal.coupon.forEach(coupons => {
-                                                const code = coupons.code;
-                                                const detail = coupons.detail.replace('طلبات تزيد على US ', '');
-                                                const desc = coupons.desc.replace('US ', '');
-                                                couponList += `🎁${desc}/${detail} :${code}\n`;
-                                            });
-                                        }
-                                        ctx.replyWithPhoto({ url: coinPi.info.normal.image },
-                                            {
+                                            if (coinPi.info.normal.coupon === "لا يوجد كوبونات ❎") {
+                                                couponList = coinPi.info.normal.coupon;
+                                            } else {
+                                                couponList = "";
+                                                coinPi.info.normal.coupon.forEach(coupons => {
+                                                    const code = coupons.code;
+                                                    const detail = coupons.detail.replace('طلبات تزيد على US ', '');
+                                                    const desc = coupons.desc.replace('US ', '');
+                                                    couponList += `🎁${desc}/${detail} :${code}\n`;
+                                                });
+                                            }
+                                            ctx.replyWithPhoto({ url: coinPi.info.normal.image },
+                                                {
 
 
-                                                caption: `
+                                                    caption: `
 <b>>-----------« تخفيض الاسعار 🎉 »>-----------</b>
 ${coinPi.info.normal.name}
 
@@ -228,20 +228,20 @@ ${coinPi.aff.limited}
 <b>----------- | ✨ الكوبونات ✨ | -----------</b>
 ${couponList}
 ` ,
-                                                parse_mode: "HTML",
-                                                ...Markup.inlineKeyboard([
-                                                    Markup.button.callback("🛒 تخفيض العملات على منتجات السلة 🛒", "cart"),
+                                                    parse_mode: "HTML",
+                                                    ...Markup.inlineKeyboard([
+                                                        Markup.button.callback("🛒 تخفيض العملات على منتجات السلة 🛒", "cart"),
 
-                                                ])
-                                            }).then(() => {
-                                                ctx.deleteMessage(message.message_id)
-                                            })
-
-
-                                    });
+                                                    ])
+                                                }).then(() => {
+                                                    ctx.deleteMessage(message.message_id)
+                                                })
 
 
-                            })
+                                        });
+
+
+                                })
                             }
                         })
 
