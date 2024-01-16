@@ -152,7 +152,7 @@ bot.on('text', async (ctx) => {
                             const links = extractLinks(`${ctx.message.text}`)
                           
                             if (links[0].includes("/p/trade/confirm.html")) {
-                                    const match = chatText.match(/availableProductShopcartIds=([\d,]+)/);
+                                const match = links[0].match(/availableProductShopcartIds=([\d,]+)/);
 
                                     if (match) {
                                         let numbersText = match[1];
