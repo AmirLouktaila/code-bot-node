@@ -150,10 +150,34 @@ bot.on('text', async (ctx) => {
                     ctx.reply('انتظر قليلا ...')
                         .then((message) => {
                             const links = extractLinks(`${ctx.message.text}`)
-                            idCatcher(links[0]).then(response_link => {
-                                if (links[0] == "https://m.aliexpress.com/p/trade/confirm") {
+                          
+                            if (links[0].includes("/p/trade/confirm.html")) {
+                                    const match = chatText.match(/availableProductShopcartIds=([\d,]+)/);
 
+                                    if (match) {
+                                        let numbersText = match[1];
+                                        numbersText = numbersText.replace(',', '%2C');
+                                        const finalUrl = `https://www.aliexpress.com/p/trade/confirm.html?availableProductShopcartIds=${numbersText}&extraParams=%7B%22channelInfo%22%3A%7B%22sourceType%22%3A%22620%22%7D%7D&aff_fcid=`;
+                                        console.log(finalUrl);
+                                    }
                                 }
+                            try {
+                                const data = aliexpressAPI.getData(finalUrl).then((data) => {
+                                    console.log(data)
+                                    cart = `
+ رابط السلة 
+ ${data}                                   
+                                    `
+                                    ctx.sendMessage(cart)
+                                })
+
+                            } catch (error) {
+                                console.error(error.message);
+                            }
+                                
+                            
+                            idCatcher(links[0]).then(response_link => {
+
                                 aliExpressLib.getData(response_link)
                                     .then((coinPi) => {
                                         console.log("coinPi : ", coinPi)

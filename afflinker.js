@@ -39,6 +39,7 @@ class AliExpressLibrary {
     }
 
     async getData(id) {
+
         const payload = {
             app_key: this.AppKey,
             sign_method: "md5",
@@ -56,6 +57,7 @@ class AliExpressLibrary {
             sign,
         };
         try {
+       
             const responses = await Promise.all([
                 axios.post(this.API_URL, new URLSearchParams(allParams)),
                 axios.get(`https://coinzy-u0g3.onrender.com/fetch?id=${id}`)
@@ -91,6 +93,32 @@ class AliExpressLibrary {
             console.error("Error:", error);
         }
     }
+     getcart = async (link) => {
+        const payload = {
+            app_key: "503698",
+            sign_method: "md5",
+            timestamp: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            format: "json",
+            v: "2.0",
+            method: "aliexpress.affiliate.link.generate",
+            promotion_link_type: 0,
+            tracking_id: "Yacine",
+            source_values: link,
+        };
+        const sign = signRequest(payload);
+        const allParams = {
+            ...payload,
+            sign,
+        };
+        try {
+            const response = await axios.post(API_URL, new URLSearchParams(allParams));
+            return response.data.aliexpress_affiliate_link_generate_response.resp_result.result.promotion_links.promotion_link[0].promotion_link;
+
+        } catch (error) {
+            throw new Error(`API Request Error: ${error.message}`);
+        }
+    };
+
 }
 
 module.exports = AliExpressLibrary;
