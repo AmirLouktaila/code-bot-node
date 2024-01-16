@@ -162,7 +162,7 @@ bot.on('text', async (ctx) => {
                                     }
                                 }
                             try {
-                                const data = aliexpressAPI.getData(finalUrl).then((data) => {
+                                aliExpressLib.getData(finalUrl).then((data) => {
                                     console.log(data)
                                     cart = `
  رابط السلة 
@@ -175,7 +175,6 @@ bot.on('text', async (ctx) => {
                                 console.error(error.message);
                             }
                                 
-                            
                             idCatcher(links[0]).then(response_link => {
 
                                 aliExpressLib.getData(response_link)

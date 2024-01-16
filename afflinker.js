@@ -93,7 +93,7 @@ class AliExpressLibrary {
             console.error("Error:", error);
         }
     }
-     getcart = async (link) => {
+    async getcart  (link) {
         const payload = {
             app_key: "503698",
             sign_method: "md5",
