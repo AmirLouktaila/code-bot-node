@@ -157,7 +157,7 @@ bot.on('text', async (ctx) => {
                                 if (match) {
                                     let numbersText = match[1];
                                     numbersText = numbersText.replace(',', '%2C');
-                                    const finalUrl = `https://star.aliexpress.com/share/share.htm?platform=AE&businessType=ProductDetail&redirectUrl=%0Ahttps%3A%2F%2Fwww.aliexpress.com%2Fp%2Ftrade%2Fconfirm.html%3FshopcartIds%3D${numbersText}%26availableProductShopcartIds%3D${numbersText}%26orderFrom%3DmsiteShopcart%26curPageLogUid%3D_7pGdch%26spm%3Da2g0n.shopcart.0.0%26extraParams%3D%7B%22channelInfo%22%3A%7B%22sourceType%22%3A%22620%22%7D%7D&aff_fcid=`;
+                                    const finalUrl = `https://www.aliexpress.com/p/trade/confirm.html?availableProductShopcartIds=${numbersText}&extraParams=%7B%22channelInfo%22%3A%7B%22sourceType%22%3A%22620%22%7D%7D&aff_fcid=`;
                                     console.log(finalUrl);
                                     try {
                                         aliExpressLib.getData(finalUrl).then((data) => {
@@ -175,30 +175,30 @@ bot.on('text', async (ctx) => {
                                 }
                             }
 
-                            else {
-                                idCatcher(links[0]).then(response_link => {
+else{
+                            idCatcher(links[0]).then(response_link => {
 
-                                    aliExpressLib.getData(response_link)
-                                        .then((coinPi) => {
-                                            console.log("coinPi : ", coinPi)
-                                            let couponList = "";
+                                aliExpressLib.getData(response_link)
+                                    .then((coinPi) => {
+                                        console.log("coinPi : ", coinPi)
+                                        let couponList = "";
 
-                                            if (coinPi.info.normal.coupon === "لا يوجد كوبونات ❎") {
-                                                couponList = coinPi.info.normal.coupon;
-                                            } else {
-                                                couponList = "";
-                                                coinPi.info.normal.coupon.forEach(coupons => {
-                                                    const code = coupons.code;
-                                                    const detail = coupons.detail.replace('طلبات تزيد على US ', '');
-                                                    const desc = coupons.desc.replace('US ', '');
-                                                    couponList += `🎁${desc}/${detail} :${code}\n`;
-                                                });
-                                            }
-                                            ctx.replyWithPhoto({ url: coinPi.info.normal.image },
-                                                {
+                                        if (coinPi.info.normal.coupon === "لا يوجد كوبونات ❎") {
+                                            couponList = coinPi.info.normal.coupon;
+                                        } else {
+                                            couponList = "";
+                                            coinPi.info.normal.coupon.forEach(coupons => {
+                                                const code = coupons.code;
+                                                const detail = coupons.detail.replace('طلبات تزيد على US ', '');
+                                                const desc = coupons.desc.replace('US ', '');
+                                                couponList += `🎁${desc}/${detail} :${code}\n`;
+                                            });
+                                        }
+                                        ctx.replyWithPhoto({ url: coinPi.info.normal.image },
+                                            {
 
 
-                                                    caption: `
+                                                caption: `
 <b>>-----------« تخفيض الاسعار 🎉 »>-----------</b>
 ${coinPi.info.normal.name}
 
@@ -228,20 +228,20 @@ ${coinPi.aff.limited}
 <b>----------- | ✨ الكوبونات ✨ | -----------</b>
 ${couponList}
 ` ,
-                                                    parse_mode: "HTML",
-                                                    ...Markup.inlineKeyboard([
-                                                        Markup.button.callback("🛒 تخفيض العملات على منتجات السلة 🛒", "cart"),
+                                                parse_mode: "HTML",
+                                                ...Markup.inlineKeyboard([
+                                                    Markup.button.callback("🛒 تخفيض العملات على منتجات السلة 🛒", "cart"),
 
-                                                    ])
-                                                }).then(() => {
-                                                    ctx.deleteMessage(message.message_id)
-                                                })
-
-
-                                        });
+                                                ])
+                                            }).then(() => {
+                                                ctx.deleteMessage(message.message_id)
+                                            })
 
 
-                                })
+                                    });
+
+
+                            })
                             }
                         })
 
