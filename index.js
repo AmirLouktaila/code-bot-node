@@ -3,6 +3,7 @@ const axios = require('axios');
 const https = require('https');
 const express = require('express');
 const AliExpressLibrary = require('./afflinker.js');
+const AliExpressLibraryCart = require('./cart.js');
 const app = express();
 const botToken = process.env.token;
 const appkey = process.env.appkeys;
@@ -13,6 +14,7 @@ const Channel = process.env.channel;
 const link_cart = process.env.cart;
 const bot = new Telegraf(botToken);
 const aliExpressLib = new AliExpressLibrary(appkey, secertkey, tarckin_id);
+const aliExpressLibCart = new AliExpressLibraryCart(appkey, secertkey, tarckin_id);
 app.use(express.json());
 app.use(bot.webhookCallback('/bot'))
 
@@ -160,7 +162,7 @@ bot.on('text', async (ctx) => {
                                     const finalUrl = `https://www.aliexpress.com/p/trade/confirm.html?availableProductShopcartIds=${numbersText}&extraParams=%7B%22channelInfo%22%3A%7B%22sourceType%22%3A%22620%22%7D%7D&aff_fcid=`;
                                     console.log(finalUrl);
                                     try {
-                                        aliExpressLib.getcart(finalUrl).then((data) => {
+                                        aliExpressLibCart.getData(finalUrl).then((data) => {
                                             console.log(data)
                                             cart = `
  رابط السلة 
