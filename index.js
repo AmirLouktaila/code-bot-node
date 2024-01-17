@@ -158,7 +158,7 @@ bot.on('text', async (ctx) => {
 
                                 if (match) {
                                     let numbersText = match[1];
-                                    numbersText = numbersText.replaceAll(',', '%2C');
+                                    numbersText = numbersText.replace(',', '%2C');
                                     const finalUrl = `https://www.aliexpress.com/p/trade/confirm.html?availableProductShopcartIds=${numbersText}&extraParams=%7B%22channelInfo%22%3A%7B%22sourceType%22%3A%22620%22%7D%7D&aff_fcid=`;
                                     console.log(finalUrl);
                                     try {
