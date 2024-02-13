@@ -201,6 +201,9 @@ bot.on('text', async (ctx) => {
                                             var ods= dise.replace("%", "") 
                                             var prices =  (coinPi.info.points.discountPrice.replace("US $", "") /100 ) *ods
                                             var total = coinPi.info.points.discountPrice.replace("US $", "") - prices
+                                            if(coinPi.info.normal.shipping !="Free Shipping"){
+                                               total = total + coinPi.info.normal.shipping 
+                                            }
                                             ctx.replyWithPhoto({ url: coinPi.info.normal.image },
                                                 {
 
