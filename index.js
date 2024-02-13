@@ -197,7 +197,9 @@ bot.on('text', async (ctx) => {
                                                     couponList += `🎁${desc}/${detail} :${code}\n`;
                                                 });
                                             }
-                                            var prices =  (coinPi.info.points.discountPrice.replace("US $", "") /100 ) *coinPi.info.points.discount.replace("خصم النقاط %", "") 
+                                            var dise= coinPi.info.points.discount.replace("خصم النقاط ", "") 
+                                            var ods= dise.replace("%", "") 
+                                            var prices =  (coinPi.info.points.discountPrice.replace("US $", "") /100 ) *ods
                                             var total = coinPi.info.points.discountPrice.replace("US $", "") - prices
                                             ctx.replyWithPhoto({ url: coinPi.info.normal.image },
                                                 {
