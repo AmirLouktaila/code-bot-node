@@ -197,6 +197,8 @@ bot.on('text', async (ctx) => {
                                                     couponList += `🎁${desc}/${detail} :${code}\n`;
                                                 });
                                             }
+                                            var prices =  (coinPi.info.points.discountPrice.replace("US $", "") /100 ) *coinPi.info.points.discount.replace("خصم النقاط ", "") 
+                                            var total = coinPi.info.points.discountPrice.replace("US $", "") - prices
                                             ctx.replyWithPhoto({ url: coinPi.info.normal.image },
                                                 {
 
@@ -220,7 +222,7 @@ ${coinPi.info.normal.name}
 🏷 نسبة تخفيض بالعملات قبل  :  (${coinPi.info.normal.discount})
 🏷 نسبة تخفيض بعد  : (${coinPi.info.points.discount})
 
-🌟رابط تخفيض النقاط: ${coinPi.info.points.total}
+🌟رابط تخفيض النقاط: ${}
 ${coinPi.aff.points}
 
 🔥 رابط تخفيض السوبر: ${coinPi.info.super.price}
