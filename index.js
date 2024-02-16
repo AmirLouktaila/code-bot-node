@@ -210,6 +210,11 @@ bot.on('text', async (ctx) => {
                                                  total = coinPi.info.points.discountPrice.replace("US $", "")
                                                 if (coinPi.info.normal.shipping != "Free Shipping") {
                                                     total = total + coinPi.info.normal.shipping
+                                                                    try{
+                                                 total=total.toFixed(2);
+                                            }catch (e){
+                                                 total=total;
+                                            }
                                                 }
                                             }
                                             ctx.replyWithPhoto({ url: coinPi.info.normal.image },
@@ -235,7 +240,7 @@ ${coinPi.info.normal.name}
 🏷 نسبة تخفيض بالعملات قبل  :  (${coinPi.info.normal.discount})
 🏷 نسبة تخفيض بعد  : (${coinPi.info.points.discount})
 
-🌟رابط تخفيض النقاط:US $${(typeof total === 'number') ? total.toFixed(2) : '0.00'}
+🌟رابط تخفيض النقاط:US $${total}
 ${coinPi.aff.points}
 
 🔥 رابط تخفيض السوبر: ${coinPi.info.super.price}
