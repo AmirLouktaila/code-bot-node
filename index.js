@@ -197,16 +197,17 @@ bot.on('text', async (ctx) => {
                                                     couponList += `🎁${desc}/${detail} :${code}\n`;
                                                 });
                                             }
-                                            if(coinPi.info.points.discount!= undefined){
+                                            let total;
+                                            if (coinPi.info.points.discount != 'لا توجد نسبة تخفيض بالعملات ❎') {
                                             var dise= coinPi.info.points.discount.replace("خصم النقاط ", "") 
                                             var ods= dise.replace("%", "") 
                                             var prices =  (coinPi.info.points.discountPrice.replace("US $", "") /100 ) *ods
-                                            var total = coinPi.info.points.discountPrice.replace("US $", "") - prices
+                                             total = coinPi.info.points.discountPrice.replace("US $", "") - prices
                                             if(coinPi.info.normal.shipping !="Free Shipping"){
                                                total = total + coinPi.info.normal.shipping 
                                             }
                                             }else {
-                                                var total = coinPi.info.points.discountPrice.replace("US $", "")
+                                                 total = coinPi.info.points.discountPrice.replace("US $", "")
                                                 if (coinPi.info.normal.shipping != "Free Shipping") {
                                                     total = total + coinPi.info.normal.shipping
                                                 }
@@ -234,7 +235,7 @@ ${coinPi.info.normal.name}
 🏷 نسبة تخفيض بالعملات قبل  :  (${coinPi.info.normal.discount})
 🏷 نسبة تخفيض بعد  : (${coinPi.info.points.discount})
 
-🌟رابط تخفيض النقاط:US $${total.toFixed(2)}
+🌟رابط تخفيض النقاط:US $${(typeof total === 'number') ? total.toFixed(2) : '0.00'}
 ${coinPi.aff.points}
 
 🔥 رابط تخفيض السوبر: ${coinPi.info.super.price}
