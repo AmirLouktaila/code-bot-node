@@ -186,7 +186,7 @@ bot.on('text', async (ctx) => {
                                             console.log("coinPi : ", coinPi)
                                             let couponList = "";
 
-                                            if (coinPi.info.normal.coupon === "لا يوجد كوبونات ❎") {
+                                            if (coinPi.info.normal.coupon == "لا يوجد كوبونات ❎") {
                                                 couponList = coinPi.info.normal.coupon;
                                             } else {
                                                 couponList = "";
