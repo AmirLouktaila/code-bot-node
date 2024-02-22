@@ -197,24 +197,28 @@ bot.on('text', async (ctx) => {
                                                     couponList += `🎁${desc}/${detail} :${code}\n`;
                                                 });
                                             }
-                                            let total;
-                                            if (coinPi.info.points.discount != 'لا توجد نسبة تخفيض بالعملات ❎') {
-                                            var dise= coinPi.info.points.discount.replace("خصم النقاط ", "") 
-                                            var ods= dise.replace("%", "") 
-                                            var prices =  (coinPi.info.points.discountPrice.replace("US $", "") /100 ) *ods
-                                             total = coinPi.info.points.discountPrice.replace("US $", "") - prices
-                                            if(coinPi.info.normal.shipping !="Free Shipping"){
-                                               total = total + coinPi.info.normal.shipping 
-                                            }
-                                            }else {
-                                                 total = coinPi.info.points.discountPrice.replace("US $", "")
-                                                if (coinPi.info.normal.shipping != "Free Shipping") {
-                                                    total = total + coinPi.info.normal.shipping
-                                                                    try{
-                                                 total=total.toFixed(2);
-                                            }catch (e){
-                                                 total=total;
-                                            }
+                                         let total;
+if (coinPi.info.points.discount != 'لا توجد نسبة تخفيض بالعملات ❎') {
+    var dise = coinPi.info.points.discount.replace("خصم النقاط ", "");
+    var ods = parseFloat(dise.replace("%", ""));
+    var prices = (parseFloat(coinPi.info.points.discountPrice.replace("US $", "")) / 100) * ods;
+    total = parseFloat(coinPi.info.points.discountPrice.replace("US $", "")) - prices;
+    if (coinPi.info.normal.shipping != "Free Shipping") {
+        total = total + parseFloat(coinPi.info.normal.shipping);
+    }
+} else {
+    total = parseFloat(coinPi.info.points.discountPrice.replace("US $", ""));
+    if (coinPi.info.normal.shipping != "Free Shipping") {
+        total = total + parseFloat(coinPi.info.normal.shipping);
+    }
+}
+
+try {
+    total = total.toFixed(2);
+} catch (e) {
+    total = total;
+}
+
                                                 }
                                             }
                                             ctx.replyWithPhoto({ url: coinPi.info.normal.image },
