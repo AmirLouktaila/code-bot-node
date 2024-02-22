@@ -219,8 +219,7 @@ try {
     total = total;
 }
 
-                                                }
-                                            }
+                                   
                                             ctx.replyWithPhoto({ url: coinPi.info.normal.image },
                                                 {
 
