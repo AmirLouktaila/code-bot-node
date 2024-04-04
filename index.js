@@ -179,8 +179,15 @@ bot.on('text', async (ctx) => {
                             }
 
                             else {
-
-                            idCatcher(links[0]).then(response_link => {
+let url_link;
+if (links[0].includes("https")) {
+ url_link = links[0]
+} else {
+   
+    var url_parts = links[0].split("http");
+    url_link = "https" + url_parts[1];
+}
+                            idCatcher(url_link).then(response_link => {
 
                                     aliExpressLib.getData(response_link)
                                         .then((coinPi) => {
