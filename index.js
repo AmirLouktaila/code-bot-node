@@ -179,9 +179,7 @@ bot.on('text', async (ctx) => {
                             }
 
                             else {
-      
-
-
+                            console.log(links[0])
                             idCatcher(links[0]).then(response_link => {
 
                                     aliExpressLib.getData(response_link)
