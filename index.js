@@ -17,7 +17,6 @@ const aliExpressLib = new AliExpressLibrary(appkey, secertkey, tarckin_id);
 const aliExpressLibCart = new AliExpressLibraryCart(appkey, secertkey, tarckin_id);
 app.use(express.json());
 app.use(bot.webhookCallback('/bot'))
-
 app.get('/', (req, res) => { res.sendStatus(200) });
 
 app.get('/ping', (req, res) => { res.status(200).json({ message: 'Ping successful' }); });
@@ -179,14 +178,14 @@ bot.on('text', async (ctx) => {
                             }
 
                             else {
-let url_link;
-if (links[0].includes("https")) {
- url_link = links[0]
-} else {
-   
-    var url_parts = links[0].split("http");
-    url_link = "https" + url_parts[1];
-}
+                            let url_link;
+                            if (links[0].includes("https")) {
+                             url_link = links[0]
+                            } else {
+                               
+                                var url_parts = links[0].split("http");
+                                url_link = "https" + url_parts[1];
+                            }
                             idCatcher(url_link).then(response_link => {
 
                                     aliExpressLib.getData(response_link)
