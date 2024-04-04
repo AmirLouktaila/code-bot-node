@@ -181,7 +181,7 @@ bot.on('text', async (ctx) => {
                             else {
                           let url_link;
 if (links[0].startsWith("http")) {
-    var url_parts = links.split("http");
+    var url_parts = links[0].split("http");
     url_link = "https" + url_parts[1];
 } else {
     url_link = links[0];
