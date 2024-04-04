@@ -181,15 +181,8 @@ bot.on('text', async (ctx) => {
                             else {
       
 
-let url_link;
-if (links[0].includes("http")) {
-    var url_parts = links.split("http");
-    url_link = "https://" + url_parts[1];
-    console.log(url_link);
-} else {
-    url_link = links[0]; 
-}
-                            idCatcher(url_link).then(response_link => {
+
+                            idCatcher(links[0]).then(response_link => {
 
                                     aliExpressLib.getData(response_link)
                                         .then((coinPi) => {
