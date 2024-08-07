@@ -56,48 +56,45 @@ class AliExpressLibrary {
             ...payload,
             sign,
         };
-        const affRes = {};
+        const affRes = { info: {}, aff: {} };
 
         try {
-            const responses = await Promise.all([
-                axios.post(this.API_URL, new URLSearchParams(allParams)),
-                axios.get(`https://afillbot.com/info?id=${id}&lang=en_DZ`)
+            const [aliexpressResponse, afillbotResponse] = await Promise.all([
+                axios.post(this.API_URL, new URLSearchParams(allParams)).catch(() => null),
+                axios.get(`https://afillbot.com/info?id=${id}&lang=en_DZ`).catch(() => null)
             ]);
 
-            responses.forEach((response, index) => {
-                switch (index) {
-                    case 0: // AliExpress affiliate link response
-                        const mappedData = response.data.aliexpress_affiliate_link_generate_response.resp_result.result.promotion_links.promotion_link.reduce((result, item) => {
-                            const sourceValue = item.source_value;
-                            let key = 'normal';
-                            if (sourceValue) {
-                                if (sourceValue.includes('sourceType=561')) {
-                                    key = 'limited';
-                                } else if (sourceValue.includes('sourceType=562')) {
-                                    key = 'super';
-                                } else if (sourceValue.includes('sourceType=620')) {
-                                    key = 'points';
-                                } else if (sourceValue.includes('sourceType=680')) {
-                                    key = 'bigsave';
-                                }
-                            }
-                            result[key] = item.promotion_link;
-                            return result;
-                        }, {});
-                        affRes['aff'] = mappedData;
-                        break;
-                    case 1: // Additional information
-                        affRes['info'] = response.data;
-                        break;
-                }
-            });
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            // If error occurs, return the aliExpress response data
-            if (affRes['aff']) {
-                return affRes;
+            if (aliexpressResponse && aliexpressResponse.data) {
+                const mappedData = aliexpressResponse.data.aliexpress_affiliate_link_generate_response.resp_result.result.promotion_links.promotion_link.reduce((result, item) => {
+                    const sourceValue = item.source_value;
+                    let key = 'normal';
+                    if (sourceValue) {
+                        if (sourceValue.includes('sourceType=561')) {
+                            key = 'limited';
+                        } else if (sourceValue.includes('sourceType=562')) {
+                            key = 'super';
+                        } else if (sourceValue.includes('sourceType=620')) {
+                            key = 'points';
+                        } else if (sourceValue.includes('sourceType=680')) {
+                            key = 'bigsave';
+                        }
+                    }
+                    result[key] = item.promotion_link;
+                    return result;
+                }, {});
+                affRes['aff'] = mappedData;
+            } else {
+                affRes['aff'] = "No data available";
             }
-            return { aff: "No data available" };
+
+            if (afillbotResponse && afillbotResponse.data) {
+                affRes['info'] = afillbotResponse.data;
+            } else {
+                affRes['info'] = {};
+            }
+        } catch (error) {
+            affRes['aff'] = {};
+            affRes['info'] = {};
         }
 
         return affRes;
