@@ -193,13 +193,13 @@ bot.on('text', async (ctx) => {
                                         .then((coinPi) => {
                                             if (Object.keys(coinPi.info).length === 0) {
                                                 const messageLink = `
-🌟رابط تخفيض النقاط: ${coinPi.info.points.discount}
+🌟رابط تخفيض النقاط: 
 ${coinPi.aff.points}
 
-🔥 رابط تخفيض السوبر: ${coinPi.info.super.price}
+🔥 رابط تخفيض السوبر: 
 ${coinPi.aff.super}
 
-📌رابط العرض المحدود: ${coinPi.info.limited.price}
+📌رابط العرض المحدود:
 ${coinPi.aff.limited}
 
                     `;
