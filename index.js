@@ -5,9 +5,9 @@ const express = require('express');
 const AliExpressLibrary = require('./afflinker.js');
 const AliExpressLibraryCart = require('./cart.js');
 const app = express();
-const botToken = process.env.token;
+const botToken =process.env.token;
 const appkey =  process.env.appkeys;
-const secertkey = process.env.secertkeys;
+const secertkey =process.env.secertkeys;
 const tarckin_id = process.env.tarckin_ids;
 const IdChannel = process.env.Idchannel;
 const Channel = process.env.channel;
@@ -318,17 +318,17 @@ ${coinPi.aff.limited}
         ctx.reply(' اأنت غير مشترك في القناة.', { reply_markup: replyMarkup2 });
     }
 });
-// app.listen(3000, () => {
-//     bot.telegram.setWebhook(`${process.env.RENDER_EXTERNAL_URL}/bot`)
-//         .then(() => {
-//             console.log('Webhook Set ✅ & Server is running on port 3000 💻');
-//             keepAppRunning();
-//         });
-// });
-bot.launch({ webhook: { domain: 'https://4550-154-246-92-243.ngrok-free.app', port: 3000}, allowedUpdates: ['message', 'callback_query'], })
-    .then(() => {
-        console.log('Bot is running');
-    })
-    .catch((error) => {
-        console.error('Error starting the bot:', error);
-    });
+app.listen(3000, () => {
+    bot.telegram.setWebhook(`${process.env.RENDER_EXTERNAL_URL}/bot`)
+        .then(() => {
+            console.log('Webhook Set ✅ & Server is running on port 3000 💻');
+            keepAppRunning();
+        });
+});
+// bot.launch({ webhook: { domain: 'https://4550-154-246-92-243.ngrok-free.app', port: 3000}, allowedUpdates: ['message', 'callback_query'], })
+//     .then(() => {
+//         console.log('Bot is running');
+//     })
+//     .catch((error) => {
+//         console.error('Error starting the bot:', error);
+//     });
