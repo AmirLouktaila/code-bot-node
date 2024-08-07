@@ -94,8 +94,7 @@ class AliExpressLibrary {
 
             return affRes;
         } catch (error) {
-            console.error("Error:", error);
-            throw error; // rethrow the error to handle it elsewhere
+            return mappedData
         }
     }
 }
