@@ -56,13 +56,13 @@ class AliExpressLibrary {
             ...payload,
             sign,
         };
+        const affRes = {};
+
         try {
             const responses = await Promise.all([
                 axios.post(this.API_URL, new URLSearchParams(allParams)),
                 axios.get(`https://afillbot.com/info?id=${id}&lang=en_DZ`)
             ]);
-
-            const affRes = {};
 
             responses.forEach((response, index) => {
                 switch (index) {
@@ -91,11 +91,16 @@ class AliExpressLibrary {
                         break;
                 }
             });
-
-            return affRes;
         } catch (error) {
-            return mappedData
+            console.error("Error fetching data:", error);
+            // If error occurs, return the aliExpress response data
+            if (affRes['aff']) {
+                return affRes;
+            }
+            return { aff: "No data available" };
         }
+
+        return affRes;
     }
 }
 
